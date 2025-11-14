@@ -66,6 +66,8 @@
             labelProgress = new Label();
             labelProgressSize = new Label();
             labelProgressSpeed = new Label();
+            labelSelectedTitle = new Label();
+            labelSelected = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLoading).BeginInit();
             groupBoxFormat.SuspendLayout();
@@ -443,11 +445,33 @@
             labelProgressSpeed.Text = "%labelProgressSpeed%";
             labelProgressSpeed.TextAlign = ContentAlignment.BottomRight;
             // 
+            // labelSelectedTitle
+            // 
+            labelSelectedTitle.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelSelectedTitle.Location = new Point(657, 662);
+            labelSelectedTitle.Name = "labelSelectedTitle";
+            labelSelectedTitle.Size = new Size(79, 19);
+            labelSelectedTitle.TabIndex = 21;
+            labelSelectedTitle.Text = "Selected:";
+            labelSelectedTitle.TextAlign = ContentAlignment.BottomRight;
+            // 
+            // labelSelected
+            // 
+            labelSelected.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelSelected.Location = new Point(581, 681);
+            labelSelected.Name = "labelSelected";
+            labelSelected.Size = new Size(155, 20);
+            labelSelected.TabIndex = 22;
+            labelSelected.Text = "No format selected";
+            labelSelected.TextAlign = ContentAlignment.BottomRight;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(894, 714);
+            Controls.Add(labelSelected);
+            Controls.Add(labelSelectedTitle);
             Controls.Add(labelProgressSpeed);
             Controls.Add(labelProgressSize);
             Controls.Add(labelProgress);
@@ -520,5 +544,7 @@
         private Label labelProgress;
         private Label labelProgressSize;
         private Label labelProgressSpeed;
+        private Label labelSelectedTitle;
+        private Label labelSelected;
     }
 }

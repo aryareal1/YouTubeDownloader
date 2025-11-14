@@ -73,6 +73,9 @@ namespace Project
             labelProgress.Visible = false;
             labelProgressSpeed.Visible = false;
             labelProgressSize.Visible = false;
+            
+            labelSelected.Visible = false;
+            labelSelectedTitle.Visible = false;
 
             // Set the default directory for Download
             saveFileDialog.InitialDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Download");
@@ -159,6 +162,8 @@ namespace Project
             buttonDownload.Visible = false;
             tabControlFormat.Visible = false;
             groupBoxFormat.Visible = false;
+            labelSelected.Visible = false;
+            labelSelectedTitle.Visible = false;
             listViewAudio.Items.Clear();
             listViewVideo.Items.Clear();
 
@@ -240,6 +245,8 @@ namespace Project
             labelAuthor.Visible = true;
             labelDur.Visible = true;
             buttonDownload.Visible = true;
+            labelSelected.Visible = true;
+            labelSelectedTitle.Visible = true;
 
             // Showing the formats to the listView and refresh the 
             listViewAudio.Size = new Size(listViewAudio.Width, tabControlFormat.Height - 40);
@@ -410,6 +417,15 @@ namespace Project
         {
             // Declare the selected tab index (Video=0; Audio=1)
             int tab = tabControlFormat.SelectedIndex;
+
+            // Update the "selected format" label
+            labelSelected.Text = listViewVideo.SelectedItems.Count == 1 && listViewAudio.SelectedItems.Count == 1
+                ? "Video + Audio"
+                : listViewVideo.SelectedItems.Count == 1
+                    ? "Video only"
+                    : listViewAudio.SelectedItems.Count == 1
+                        ? "Audio only"
+                        : "No format selected";
 
             // Showing labelFormatDetailsEmpty if there's no selected format
             if ((tab == 0 ? listViewVideo.SelectedItems.Count : listViewAudio.SelectedItems.Count) == 0)
