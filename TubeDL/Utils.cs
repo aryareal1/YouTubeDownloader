@@ -22,11 +22,17 @@ public class Utils
     /// </summary>
     public static readonly string tmpPath = Path.Combine(AppContext.BaseDirectory, "tmp");
 
+    /// <summary>
+    /// Video format filter for SaveFileDialog
+    /// </summary>
     public static readonly string VideoFormat =
         "MP4 File (*.mp4)|*.mp4|" +
         "MKV File (*.mkv)|*.mkv|" +
         "AVI File (*.avi)|*.avi|" +
         "MOV File (*.mov)|*.mov";
+    /// <summary>
+    /// Audio format filter for SaveFileDialog
+    /// </summary>
     public static readonly string AudioFormat =
         "MP3 File (*.mp3)|*.mp3|" +
         "M4A File (*.m4a)|*.m4a|" +
@@ -122,6 +128,14 @@ public class Utils
         }
     }
 
+    /// <summary>
+    /// Copies data from source stream to destination stream with pause and cancel support.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="destination"></param>
+    /// <param name="controller"></param>
+    /// <param name="bufferSize"></param>
+    /// <returns></returns>
     private static async Task CopyStreamWithControl(
         Stream source,
         Stream destination,
@@ -142,6 +156,20 @@ public class Utils
 
     // -- DOWNLOADER METHODS --
 
+    /// <summary>
+    /// Downloads video and/or audio using yt-dlp and ffmpeg with pause and cancel support.
+    /// </summary>
+    /// <param name="ytDlp"></param>
+    /// <param name="ffmpeg"></param>
+    /// <param name="metadata"></param>
+    /// <param name="savePath"></param>
+    /// <param name="videoFormat"></param>
+    /// <param name="audioFormat"></param>
+    /// <param name="controller"></param>
+    /// <param name="progress"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="Exception"></exception>
     public static async Task Download(
         YtDlp ytDlp, Ffmpeg ffmpeg,
         YoutubeMetadata metadata,
@@ -152,7 +180,7 @@ public class Utils
         Action<YtDlpProgress?, FfmpegProgress?>? progress = null
     )
     {
-        // Validasi format
+        // Validate formats
         if (audioFormat == null && videoFormat == null)
             throw new ArgumentException("Both audioFormat and videoFormat cannot be null");
 
@@ -170,6 +198,9 @@ public class Utils
             try
             {
                 controller ??= new DownloadController();
+
+                // Check for pause/cancel
+                await controller.CheckPauseAndCancel();
 
                 // Create temporary info file
                 Debug.WriteLine("(debug) Creating temporary info file...");
@@ -202,8 +233,6 @@ public class Utils
                     PipeTransmissionMode.Message,
                     PipeOptions.Asynchronous
                 );
-
-                await controller.CheckPauseAndCancel();
 
                 // Build and start ffmpeg process
                 Debug.WriteLine("(debug) Starting ffmpeg process...");
@@ -358,7 +387,7 @@ public class Utils
                         File.Delete(audioTempPath);
                     }
 
-                    // Hapus partial file jika dibatalkan atau error
+                    // Remove partial file if cancelled or error
                     if (tempOutputFile != null && File.Exists(tempOutputFile) && controller?.IsCancelled == true)
                     {
                         File.Delete(tempOutputFile);
@@ -385,6 +414,19 @@ public class Utils
         }
     }
 
+    /// <summary>
+    /// Downloads a video or audio using yt-dlp and ffmpeg with pause and cancel support.
+    /// </summary>
+    /// <param name="ytDlp"></param>
+    /// <param name="ffmpeg"></param>
+    /// <param name="metadata"></param>
+    /// <param name="savePath"></param>
+    /// <param name="format"></param>
+    /// <param name="controller"></param>
+    /// <param name="progress"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="Exception"></exception>
     public static async Task DownloadStandalone(
         YtDlp ytDlp, Ffmpeg ffmpeg,
         object metadata,
@@ -406,7 +448,7 @@ public class Utils
         {
             controller ??= new DownloadController();
 
-            // Cek cancel di awal
+            // Check for pause/cancel
             await controller.CheckPauseAndCancel();
 
             // Create temporary info file

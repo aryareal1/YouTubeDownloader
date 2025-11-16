@@ -1,21 +1,43 @@
 ﻿using System.Diagnostics;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using TubeDL.Schema;
 using TubeDL.Tools;
-using static System.Windows.Forms.DataFormats;
 
 namespace TubeDL;
 
 public partial class MainForm : Form
 {
+    // -- DECLARATIONS --
+
+    /// <summary>
+    /// Represents an instance of the YtDlp tool, which is used for interacting with YouTube-DLP functionality.
+    /// </summary>
     readonly YtDlp ytDlp;
+    /// <summary>
+    /// Represents an instance of the FFmpeg library used for multimedia processing tasks.
+    /// </summary>
     readonly Ffmpeg ffmpeg;
 
+    /// <summary>
+    /// Stores the metadata retrieved from YouTube-DLP for the current video or audio content.
+    /// </summary>
     private YoutubeMetadata? _metadata;
+    /// <summary>
+    /// Controls the download process, allowing for pausing, resuming, and canceling downloads.
+    /// </summary>
     private DownloadController? _controller;
+    /// <summary>
+    /// Indicates whether a search operation is currently in progress.
+    /// </summary>
     private bool _isSearching = false;
 
+    /// <summary>
+    /// Class contructor
+    /// </summary>
+    /// <remarks>
+    /// This constructor initializes the main form of the application, setting up the necessary components and
+    /// dependencies required for its operation.
+    /// </remarks>
     public MainForm(YtDlp ytDlp, Ffmpeg ffmpeg)
     {
         this.ytDlp = ytDlp;
@@ -419,7 +441,7 @@ public partial class MainForm : Form
                 vSize = video?.Filesize ?? 0,
                 totalSize = aSize + vSize;
 
-            // Start downloading and updating the progress
+            // Declare controller and updating button states
             _controller = new DownloadController();
             buttonPause.Text = "||";
 
@@ -427,6 +449,7 @@ public partial class MainForm : Form
             buttonPause.Visible = true;
             buttonCancel.Visible = true;
 
+            // Start downloading process
             YtDlpProgress ytP = new(); FfmpegProgress ffmP = new();
             try
             {
@@ -501,6 +524,11 @@ public partial class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Pauses or resumes the ongoing download process based on the current state.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void PauseDownload(object sender, EventArgs e)
     {
         if (_controller is null)
@@ -521,6 +549,11 @@ public partial class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Cancels the ongoing download process.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void CancelDownload(object sender, EventArgs e)
     {
         if (_controller is null)

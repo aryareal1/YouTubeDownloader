@@ -8,9 +8,18 @@ public class DownloadController
     private volatile bool _isCancelled;
     private readonly object _lockObject = new();
 
+    /// <summary>
+    /// Check if the download is currently paused.
+    /// </summary>
     public bool IsPaused => _isPaused;
+    /// <summary>
+    /// Check if the download has been cancelled.
+    /// </summary>
     public bool IsCancelled => _isCancelled;
 
+    /// <summary>
+    /// Pause the download process.
+    /// </summary>
     public void Pause()
     {
         lock (_lockObject)
@@ -23,6 +32,9 @@ public class DownloadController
         }
     }
 
+    /// <summary>
+    /// Resume the download process.
+    /// </summary>
     public void Resume()
     {
         lock (_lockObject)
@@ -38,6 +50,9 @@ public class DownloadController
         }
     }
 
+    /// <summary>
+    /// Cancel the download process.
+    /// </summary>
     public void Cancel()
     {
         lock (_lockObject)
@@ -53,6 +68,11 @@ public class DownloadController
         }
     }
 
+    /// <summary>
+    /// Check if the download is paused or cancelled, and wait if paused.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="OperationCanceledException"></exception>
     public async Task CheckPauseAndCancel()
     {
         // Cek cancel dulu
